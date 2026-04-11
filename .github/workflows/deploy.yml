@@ -28,6 +28,11 @@ jobs:
     - name: Destroy stacks
       run: cdk destroy --all --force
 
+    - name: Delete CDK bootstrap stack
+      run: |
+        aws cloudformation delete-stack --stack-name CDKToolkit
+        aws cloudformation wait stack-delete-complete --stack-name CDKToolkit  
+
 # name: Deploy AWS Org Foundation
 
 # on:
