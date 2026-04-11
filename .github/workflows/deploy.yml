@@ -1,23 +1,16 @@
-name: Deploy AWS Org Foundation
+name: Destroy AWS Org Foundation
 
 on:
-  push:
-    branches:
-    - main
+  workflow_dispatch:
+
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  deploy:
+  destroy:
     runs-on: ubuntu-latest
-
-    env:
-      CDK_DEPLOY_REGION: ${{ secrets.AWS_REGION }}
-      CDK_DEPLOY_ACCOUNT: ""
-      ORG_PARENT_OU_ID: ${{ secrets.ORG_PARENT_OU_ID }}
-      SSO_INSTANCE_ARN: ${{ secrets.SSO_INSTANCE_ARN }}
 
     steps:
     - name: Checkout
@@ -29,31 +22,68 @@ jobs:
         role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Export AWS account ID to env
-      id: aws-account
-      run: |
-        ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-        echo "CDK_DEPLOY_ACCOUNT=$ACCOUNT_ID" >> $GITHUB_ENV
+    - name: Install CDK
+      run: npm install -g aws-cdk
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
+    - name: Destroy stacks
+      run: cdk destroy --all --force
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        npm install -g aws-cdk
+# name: Deploy AWS Org Foundation
 
-    - name: CDK bootstrap (idempotent)
-      run: |
-        cdk bootstrap aws://$CDK_DEPLOY_ACCOUNT/${{ secrets.AWS_REGION }}
+# on:
+#   push:
+#     branches:
+#     - main
 
-    - name: CDK synth
-      run: |
-        cdk synth
+# permissions:
+#   id-token: write
+#   contents: read
 
-    - name: CDK deploy
-      run: |
-        cdk deploy --all --require-approval never
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     env:
+#       CDK_DEPLOY_REGION: ${{ secrets.AWS_REGION }}
+#       CDK_DEPLOY_ACCOUNT: ""
+#       ORG_PARENT_OU_ID: ${{ secrets.ORG_PARENT_OU_ID }}
+#       SSO_INSTANCE_ARN: ${{ secrets.SSO_INSTANCE_ARN }}
+
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v4
+
+#     - name: Configure AWS credentials (OIDC)
+#       uses: aws-actions/configure-aws-credentials@v4
+#       with:
+#         role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+#         aws-region: ${{ secrets.AWS_REGION }}
+
+#     - name: Export AWS account ID to env
+#       id: aws-account
+#       run: |
+#         ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+#         echo "CDK_DEPLOY_ACCOUNT=$ACCOUNT_ID" >> $GITHUB_ENV
+
+#     - name: Set up Python
+#       uses: actions/setup-python@v5
+#       with:
+#         python-version: "3.11"
+
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
+#         npm install -g aws-cdk
+
+#     - name: CDK bootstrap (idempotent)
+#       run: |
+#         cdk bootstrap aws://$CDK_DEPLOY_ACCOUNT/${{ secrets.AWS_REGION }}
+
+#     - name: CDK synth
+#       run: |
+#         cdk synth
+
+#     - name: CDK deploy
+#       run: |
+#         cdk deploy --all --require-approval never
