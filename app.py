@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-import aws_cdk as cdk
+from aws_cdk import App, Stack
 
 from org_foundation.ou_stack import OrganizationalUnitsStack
 from org_foundation.identity_center_stack import IdentityCenterStack
