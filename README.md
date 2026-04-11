@@ -189,7 +189,7 @@ The CDK structure supports multi‑stack, multi‑account deployments as your en
 
 ## **Support**
 
-If you are experimenting with this architecture and encounter issues, you can reach out for help:
+If you are experimenting with this architecture and encounter issues, you can reach out for help using the following email ID:
 
 📧 **mogeshailu381@gmail.com**
 
