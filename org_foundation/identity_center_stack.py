@@ -34,7 +34,7 @@ class IdentityCenterStack(Stack):
             ],
         )
 
-        # NonPROD PowerUser permission set
+        # Nonprod PowerUser permission set
         self.nonprod_poweruser_permission_set = sso.CfnPermissionSet(
             self,
             "NonProdPowerUserPermissionSet",
