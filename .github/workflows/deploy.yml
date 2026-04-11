@@ -15,7 +15,7 @@ jobs:
 
     env:
       CDK_DEPLOY_REGION: ${{ secrets.AWS_REGION }}
-      CDK_DEPLOY_ACCOUNT: "" # will be filled by AWS credentials
+      CDK_DEPLOY_ACCOUNT: ""
       ORG_PARENT_OU_ID: ${{ secrets.ORG_PARENT_OU_ID }}
       SSO_INSTANCE_ARN: ${{ secrets.SSO_INSTANCE_ARN }}
 
@@ -45,6 +45,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         npm install -g aws-cdk
+
+    - name: CDK bootstrap (idempotent)
+      run: |
+        cdk bootstrap aws://$CDK_DEPLOY_ACCOUNT/${{ secrets.AWS_REGION }}
 
     - name: CDK synth
       run: |
