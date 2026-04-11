@@ -1,6 +1,5 @@
 from aws_cdk import (
     Stack,
-    Duration,
 )
 from aws_cdk import aws_sso as sso
 from constructs import Construct
@@ -30,10 +29,7 @@ class IdentityCenterStack(Stack):
             name="Prod-Admin",
             description="Admin access for PROD accounts",
             session_duration="PT4H",
-            relay_state_type="URL",
-            relay_state="https://console.aws.amazon.com/",
             managed_policies=[
-                # AWS managed AdministratorAccess policy
                 "arn:aws:iam::aws:policy/AdministratorAccess"
             ],
         )
@@ -46,10 +42,7 @@ class IdentityCenterStack(Stack):
             name="NonProd-PowerUser",
             description="PowerUser access for NonPROD accounts",
             session_duration="PT8H",
-            relay_state_type="URL",
-            relay_state="https://console.aws.amazon.com/",
             managed_policies=[
-                # AWS managed PowerUserAccess policy
                 "arn:aws:iam::aws:policy/PowerUserAccess"
             ],
         )
